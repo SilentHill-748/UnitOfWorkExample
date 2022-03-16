@@ -2,8 +2,11 @@
 using System.Text.Encodings.Web;
 using System.Text.Json;
 
+using UnitOfWorkExample.Helpers;
 using UnitOfWorkExample.Database;
+using UnitOfWorkExample.Database.Entities;
 using UnitOfWorkExample.Database.Interfaces;
+using UnitOfWorkExample.Database.Repositories.Interfaces;
 
 namespace UnitOfWorkExample;
 
@@ -31,6 +34,23 @@ public static class App
     public static void PrintWelcomMessage()
     {
         Console.WriteLine("Application is running. Hello world!");
+    }
+
+    public static void DataSeed()
+    {
+        //Create database if not exists
+        bool wasCreated = UnitOfWork.DbContext.Database.EnsureCreated();
+
+        if (!wasCreated)
+            return;
+        
+        var groupRepo = (IGroupRepository)UnitOfWork.GetRepository<Group>();
+        var studentRepo = (IStudentRepository)UnitOfWork.GetRepository<Student>();
+
+        groupRepo.InsertRange(GroupHelper.GetGroups());
+        studentRepo.InsertRange(StudentHelper.GetStudents());
+
+        UnitOfWork.Save();
     }
 
     /// <summary>

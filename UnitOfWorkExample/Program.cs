@@ -3,12 +3,11 @@ using UnitOfWorkExample.Database.Entities;
 using UnitOfWorkExample.Database.Repositories.Interfaces;
 
 App.PrintWelcomMessage();
+App.DataSeed();
 
-var studentRepository = (IStudentRepository)App.UnitOfWork.GetRepository<Student>();
-
-var allStudents = studentRepository
+var studentRepo = (IStudentRepository)App.UnitOfWork.GetRepository<Student>();
+var allStudents = studentRepo
     .Select(includeProperty: "Group")
     .ToArray();
 
-Console.WriteLine("Print all students.");
 App.Print(allStudents);
